@@ -1,33 +1,31 @@
-﻿import streamlit as st
+import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Title
-st.title("Customer Data Dashboard")
+# Page title
+st.title("📊 Customer Transactions Dashboard")
 
 # Upload CSV
-uploaded_file = st.file_uploader("Upload your cleaned CSV file", type=["csv"])
+uploaded_file = st.file_uploader("Upload a CSV file", type="csv")
+
 if uploaded_file is not None:
+    # Read data
     df = pd.read_csv(uploaded_file)
-    
-    st.subheader("Preview of Data")
-    st.write(df.head())
 
-    # Summary Stats
-    st.subheader("Summary Statistics")
-    st.write(df.describe(include='all'))
+    st.subheader("📄 Raw Data")
+    st.dataframe(df.head())
 
-    # Bar Chart Example: Customers by Gender (change column if needed)
-    if 'gender' in df.columns:
-        st.subheader("Gender Distribution")
-        gender_counts = df['gender'].value_counts()
-        st.bar_chart(gender_counts)
+    # Basic Cleaning
+    st.subheader("🧼 Cleaned Data Summary")
+    st.write("We’ll drop rows with missing values and ensure correct datatypes.")
 
-    # Pie Chart Example: Customer Country Distribution
-    if 'country' in df.columns:
-        st.subheader("Customers by Country")
-        country_counts = df['country'].value_counts()
+    df_clean = df.dropna()
+    st.dataframe(df_clean.describe())
+
+    # Basic Visualization
+    st.subheader("📈 Transaction Amounts Histogram")
+
+    if "Amount" in df_clean.columns:
         fig, ax = plt.subplots()
-        ax.pie(country_counts, labels=country_counts.index, autopct="%1.1f%%")
-        ax.axis("equal")
-        st.pyplot(fig)
+        ax.hist(df_clean["Amount"], bins=20, color="#4CAF50", edgecolor="black")
+        ax.set
